@@ -1,0 +1,138 @@
+body {
+    background-image: url(../images/6.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+}
+
+body a {
+    color: #fff;
+}
+
+body a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+.wrapper {
+    color: #fff;
+    font-family: times new roman;
+    font-size: 20px;
+}
+
+.sms_logo {
+    margin-top: 25%;
+    margin-left: 10%;
+    width: 70%;
+}
+
+.input {
+    padding-left: 40px;
+    color: white;
+    font-family: times new roman;
+    font-size: 20px;
+    height: 50px;
+    line-height: 50px;
+    border: none;
+    border-radius: 0px;
+    border-bottom: 1px solid #fff;
+    background-color: transparent;
+}
+
+.input-group-addon {
+    font-size: 20px;
+    color: white;
+    background-color: transparent !important;
+    border: none;
+}
+
+.btn-primary {
+    font-size: 25px;
+    font-family: SomeFont;
+    background-color: transparent;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    margin-top: 5%;
+    margin-left: 30%;
+    padding-right: 60px;
+    padding-left: 60px;
+}
+
+.btn-primary:hover {
+    background-color: transparent;
+    border: 1px solid #fff;
+    border-radius: 10px;
+}
+
+.btn-primary:active {
+    background-color: transparent;
+    border: 1px solid #fff;
+    border-radius: 10px;
+}
+
+.input-group i {
+    position: absolute;
+    top: 15px;
+    left: 30px;
+}
+
+.pull-left {
+    padding-left: 35px;
+}
+
+.login {
+    margin-left: 10%;
+    margin-right: 20%;
+    margin-top: 32%;
+}
+
+.sign_up {
+    padding: 20px;
+    margin-top: 9%;
+    margin-left: 30%;
+}
+
+@media only screen and (max-width: 1200px) {
+    .login {
+        width: 60%;
+        margin-left: 20%;
+    }
+    .sign_up {
+        width: 60%;
+        margin-left: 20%;
+    }
+    .btn-primary {
+        margin-left: 30%;
+        padding-left: 15%;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .login {
+        width: 60%;
+        margin-left: 20%;
+    }
+    .sign_up {
+        width: 60%;
+        margin-left: 20%;
+    }
+    .btn-primary {
+        margin-left: 30%;
+        padding-left: 15%;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .login {
+        width: 60%;
+        margin-left: 20%;
+    }
+    .sign_up {
+        width: 60%;
+        margin-left: 20%;
+    }
+    .btn-primary {
+        margin-left: 30%;
+        padding-left: 15%;
+    }
+}
