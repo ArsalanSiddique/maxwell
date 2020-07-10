@@ -12,6 +12,17 @@ if (isset($_POST["addDepartment"])) {
     } else {
         header("Location:../../index.php?page=department/departments&msg=false");
     }
+} else if (isset($_POST["up_department"])) {
+    extract($_POST);
+    $table = "department";
+    $data = ["name" => $name];
+
+    $result = $academics_obj->updateRecord($table, $data, $depart_id);
+    if ($result = true) {
+        header("Location:../../index.php?page=department/departments&msg=up_true");
+    } else {
+        header("Location:../../index.php?page=department/departments&msg=up_false");
+    }
 }else {
     header("Location:../../index.php");   
 }

@@ -67,8 +67,6 @@ if (isset($_POST["info"])) {
 	</div>
 </div>
 
-
-
 <div class="table-responsive thumbnail" style="margin-top:50px;padding:20px;">
 	<table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
 		<thead>

@@ -55,7 +55,7 @@ class crud extends config
 			$value = implode(',', $value);
 			$query .= ' VALUES (' . $value . ')';
 
-			echo $query;
+			// echo $query;
 			$result = $this->DbCon->query($query);
 			return $result;
 		}

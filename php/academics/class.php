@@ -60,7 +60,7 @@ if (isset($_POST["addClass"])) {
 } else if (isset($_POST["up_class"])) {
     extract($_POST);
     $table = "class";
-    $data = ["name" => $name, "numeric_name" => $n_name, "class_teacher" => $teacher];
+    $data = ["name" => $name, "numeric_name" => $n_name, "class_teacher" => $teacher, "depart_id" => $department];
 
     $result = $academics_obj->updateRecord($table, $data, $class_id);
     if ($result = true) {

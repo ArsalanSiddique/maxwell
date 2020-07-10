@@ -288,6 +288,22 @@ class reports extends crud
         }
     }
 
+    function fetchCustomReport($campus_id, $depart_id)
+    {
+        $table1 = "class";
+        $table2 = "section";
+        $behave1 = "id";
+        $behave2 = "class_id";
+        $col = ["class.id as class_id", "section.id as section_id", "class.name as class_name", "section.name as section_name", "depart_id"];
+        $where = "class.campus_id = $campus_id AND class.depart_id = $depart_id  AND class.deleted_at IS NULL AND section.deleted_at IS NULL";
+        $result = $this->leftJoin($table1, $table2, $col, $behave1, $behave2, $where);
+        if (mysqli_num_rows($result) > 0) {
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
     function fetchMonthlyPaymentOfStudent($student_id, $session_id, $month) {
 
         $table = "payment";

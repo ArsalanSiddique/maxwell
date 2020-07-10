@@ -38,6 +38,28 @@ if (isset($_POST["save_setting"])) {
     if ($result == true) {
         header("Location: ../../index.php?page=accounts/payment/payment_setting&msg=up_true");
     }
+}else if(isset($_POST["add_category"])) {
+    extract($_POST);
+    require_once("../account.php");
+    $data = [null, $name, $details, null, null, null];
+    $result = $account_obj->addRecord("fee_category", $data);
+    if($result == true) {
+        header("Location: ../../index.php?page=accounts/payment/payment_setting&msg=true");
+    }else {
+        header("Location: ../../index.php?page=accounts/payment/payment_setting&msg=false");
+    }
+} else if (isset($_POST["up_cat"])) {
+    require_once("../account.php");
+    extract($_POST);
+    $table = "fee_category";
+    $data = ["name" => $name, "details" => $details];
+
+    $result = $account_obj->updateRecord($table, $data, $cat_id);
+    if ($result = true) {
+        header("Location:../../index.php?page=accounts/payment/payment_setting&msg=up_true");
+    } else {
+        header("Location:../../index.php?page=accounts/payment/payment_setting&msg=up_false");
+    }
 } else {
     header("Location: index.php");
 }

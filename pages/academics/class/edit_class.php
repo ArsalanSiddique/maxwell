@@ -6,7 +6,7 @@ if (isset($_REQUEST["cId"])) {
     $id = $_REQUEST["cId"];
     $record =  $academics_obj->getRecordById($table, $id);
     $teachers = $academics_obj->fetchAllRecord("teachers");
-    
+    $departments = $academics_obj->fetchAllRecord("department");
 }
 ?>
 
@@ -35,14 +35,30 @@ if (isset($_REQUEST["cId"])) {
                             <input type="text" name="n_name" id="n_name" value="<?php echo $record["numeric_name"] ?>" class="form-control" placeholder="iii">
                         </div>
                         <div class="form-group">
+                            <label for="department">Select Department <span class="red_required">*</span></label>
+                            <select name="department" class="form-control" id="department" required="required">
+                                <option value="">Select department</option>
+                                <?php
+
+                                foreach ($departments as $rows) {
+                                ?>
+                                    <option value="<?php echo $rows["id"] ?>" <?php if ($record["depart_id"] == $rows["id"]) {
+                                                                                    echo "selected";
+                                                                                } ?>><?php echo $rows["name"] ?></option>
+                                <?php
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="teacher">Select Teacher <span class="red_required">*</span></label>
                             <select name="teacher" class="form-control" id="teacher" required="required">
                                 <option value="">Select Teacher</option>
                                 <?php
-                                
+
                                 foreach ($teachers as $rows) {
                                 ?>
-                                    <option value="<?php echo $rows["name"] ?>" <?php if ($record["class_teacher"] == $rows["name"]) {
+                                    <option value="<?php echo $rows["id"] ?>" <?php if ($record["class_teacher"] === $rows["id"]) {
                                                                                     echo "selected";
                                                                                 } ?>><?php echo $rows["name"] ?></option>
                                 <?php

@@ -28,6 +28,7 @@ if (isset($_REQUEST["msg"])) {
 
 
 $teachers = $academics_obj->getAllTeachers($_SESSION["campus_id"]);
+$departments = $academics_obj->fetchAllRecord("department");
 
 ?>
 <div class="row">
@@ -52,6 +53,7 @@ $teachers = $academics_obj->getAllTeachers($_SESSION["campus_id"]);
 						<thead>
 							<tr>
 								<th>#</th>
+								<th>Department Name</th>
 								<th>Class Name</th>
 								<th>Numeric Name</th>
 								<th>Teacher</th>
@@ -67,9 +69,10 @@ $teachers = $academics_obj->getAllTeachers($_SESSION["campus_id"]);
 
 								<tr>
 									<td><?php echo ++$cId ?></td>
+									<td><?php echo $academics_obj->getColName("department", "name",  $rows["depart_id"]) ?></td>
 									<td><?php echo $rows["name"] ?></td>
 									<td><?php echo $rows["numeric_name"] ?></td>
-									<td><?php echo $rows["class_teacher"] ?></td>
+									<td><?php echo $academics_obj->getColName("teachers", "name",  $rows["class_teacher"]) ?></td>
 									<td>
 										<a href="index.php?page=academics/class/edit_class&cId=<?php echo $rows["id"] ?>"><i class="fa fa-pencil btn-edit"></i></a> &nbsp;
 										<a href="index.php?page=academics/class/manage_class&status=delete&cId=<?php echo $rows["id"] ?>" target="_self" data-toggle="confirmation" data-placement="left"><i class="fa fa-trash btn-trash"></i></a>
@@ -91,11 +94,20 @@ $teachers = $academics_obj->getAllTeachers($_SESSION["campus_id"]);
 						<input type="text" name="n_name" id="" class="form-control" placeholder="i" />
 					</div>
 					<div class="form-group">
-						<label for="class_name">Class Teacher:</label>
-						<select name="teacher" class="form-control" id="">
+						<label for="department">Select Department:</label>
+						<select name="department" class="form-control" id="department">
+							<option value="">Select Teacher</option>
+							<?php foreach ($departments as $department) { ?>
+								<option value="<?php echo $department["id"] ?>"><?php echo $department["name"] ?></option>
+							<?php } ?>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="teacher">Class Teacher:</label>
+						<select name="teacher" class="form-control" id="teacher">
 							<option value="">Select Teacher</option>
 							<?php foreach ($teachers as $teacher) { ?>
-								<option value="<?php echo $teacher["name"] ?>"><?php echo $teacher["name"] ?></option>
+								<option value="<?php echo $teacher["id"] ?>"><?php echo $teacher["name"] ?></option>
 							<?php } ?>
 						</select>
 					</div>

@@ -1,6 +1,7 @@
 <?php
 require_once("php/reports.php");
 $sessions = $report_obj->fetchALlRecord("session");
+$departments = $report_obj->fetchALlRecord("department");
 $campuses = $report_obj->fetchALlRecord("campus");
 
 ?>
@@ -31,11 +32,25 @@ $campuses = $report_obj->fetchALlRecord("campus");
 			<div class="form-group col-md-3">
 				<label for="section">Select Campus:</label><br>
 				<select name="session" class="form-control" id="campus_id" required="required" style="width:100%;" onchange="showRecords()">
-					<option value="">Select</option>
 					<?php
 					foreach ($campuses as $camp) {
 					?>
-						<option value="<?php echo $camp["id"] ?>"><?php echo $camp["name"] ?></option>
+						<option value="<?php echo $camp["id"] ?>" <?php if ($_SESSION["campus_id"] == $camp["id"]) {
+																		echo "selected";
+																	} ?>><?php echo $camp["name"] ?></option>
+					<?php
+					}
+					?>
+				</select>
+			</div>
+			<div class="form-group col-md-3">
+				<label for="section">Select Department:</label><br>
+				<select name="depart_id" class="form-control" id="depart_id" required="required" style="width:100%;" onchange="showRecords()">
+					<option value="">Select</option>
+					<?php
+					foreach ($departments as $depart) {
+					?>
+						<option value="<?php echo $depart["id"] ?>"><?php echo $depart["name"] ?></option>
 					<?php
 					}
 					?>
@@ -56,6 +71,7 @@ $campuses = $report_obj->fetchALlRecord("campus");
 		<thead>
 			<tr>
 				<th>#</th>
+				<th>Depart</th>
 				<th>Class</th>
 				<th>Section</th>
 				<th>Students</th>
@@ -74,13 +90,15 @@ $campuses = $report_obj->fetchALlRecord("campus");
 	function showRecords() {
 		var session_id = document.getElementById("session_id").value;
 		var campus_id = document.getElementById("campus_id").value;
+		var depart_id = document.getElementById("depart_id").value;
 		var month = document.getElementById("month").value;
-		if (campus_id != "" && month != "") {
+		if (month != "" && depart_id != '') {
 			$.ajax({
 				url: 'php/reports/income.php',
 				type: 'POST',
 				data: {
 					campus_id: campus_id,
+					depart_id: depart_id,
 					session_id: session_id,
 					month: month,
 				},

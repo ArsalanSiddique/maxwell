@@ -63,7 +63,7 @@ if (isset($_REQUEST["msg"])) {
                                     <td><?php echo $academics_obj->getColName("campus", "name", $rows["campus_id"]) ?></td>
                                     <td><?php echo $rows["name"] ?></td>
                                     <td>
-                                        <a href="index.php?page=department/edit_department&cId=<?php echo $rows["id"] ?>"><i class="fa fa-pencil btn-edit"></i></a> &nbsp;
+                                        <a href="index.php?page=department/edit_department&dId=<?php echo $rows["id"] ?>"><i class="fa fa-pencil btn-edit"></i></a> &nbsp;
                                         <a href="index.php?page=department/departments&status=delete&dId=<?php echo $rows["id"] ?>" target="_self" data-toggle="confirmation" data-placement="left"><i class="fa fa-trash btn-trash"></i></a>
                                     </td>
                                 </tr>
