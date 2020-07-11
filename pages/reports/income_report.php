@@ -76,6 +76,7 @@ $campuses = $report_obj->fetchALlRecord("campus");
 				<th>Section</th>
 				<th>Students</th>
 				<th>Total Fees</th>
+				<th>Other Fees</th>
 				<th>Paid Fees</th>
 				<th>Due Fess</th>
 				<th>Actions</th>

@@ -15,9 +15,11 @@ if (isset($_REQUEST["msg"])) {
 require_once("php/account.php");
 $record = $account_obj->getRecordById("payment", $_REQUEST["pId"]);
 $classes = $account_obj->fetchAllRecord("class");
+$departs = $account_obj->fetchAllRecord("department");
+$categories = $account_obj->fetchAllRecord("fee_category");
 $students = $account_obj->showStudentByClass("active", $record["class_id"]);
-?>
 
+?>
 <div class="row">
 	<ul class="breadcrumb" style="box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);">
         <li><a href="index.php"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -49,6 +51,19 @@ $students = $account_obj->showStudentByClass("active", $record["class_id"]);
 								<br>
 								<br>
 								<div class="form-group">
+									<label for="depart_id">Department <span class="red_required">*</span></label>
+									<select name="depart_id" class="form-control" id="depart_id" required="required">
+										<option value="">Select</option>
+										<?php
+										foreach ($departs as $depart) {
+										?>
+											<option value="<?php echo $depart["id"] ?>" <?php if($depart["id"] == $record["depart_id"]) { echo "selected"; } ?> ><?php echo $depart["name"] ?></option>
+										<?php
+										}
+										?>
+									</select>
+								</div>
+								<div class="form-group">
 									<label for="class">Select Class <span class="red_required">*</span></label>
 									<select name="class" class="form-control" id="class" required="required" onchange="myfun(this.value)">
 										<option value="">Select</option>
@@ -56,6 +71,19 @@ $students = $account_obj->showStudentByClass("active", $record["class_id"]);
 										foreach ($classes as $class) {
 										?>
 											<option value="<?php echo $class["id"] ?>" <?php if($class["id"] == $record["class_id"]) { echo "selected"; } ?> ><?php echo $class["name"] ?></option>
+										<?php
+										}
+										?>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="cat">Category <span class="red_required">*</span></label>
+									<select name="cat_id" class="form-control" id="cat" required="required" onchange="myfun(this.value)">
+										<option value="">Select</option>
+										<?php
+										foreach ($categories as $cat) {
+										?>
+											<option value="<?php echo $cat["id"] ?>" <?php if($cat["id"] == $record["category_id"]) { echo "selected"; } ?> ><?php echo $cat["name"] ?></option>
 										<?php
 										}
 										?>
@@ -75,15 +103,6 @@ $students = $account_obj->showStudentByClass("active", $record["class_id"]);
 									</select>
 								</div>
 								<div class="form-group">
-									<label for="title">Title <span class="red_required">*</span></label>
-                                    <input type="text" name="title" id="title" class="form-control" value="<?php echo $record["title"] ?>" placeholder="Enter title" required="required">
-                                    <input type="hidden" name="inv_id" id="inv_id" value="<?php echo $record["id"] ?>">
-								</div>
-								<div class="form-group">
-									<label for="details">Description</label>
-									<input type="text" name="details" id="details" class="form-control" value="<?php echo $record["details"] ?>" placeholder="Description">
-								</div>
-								<div class="form-group">
 									<label for="month">Select Month</label>
 									<input type="month" name="month" id="month" value="<?php echo $record["month"] ?>" class="form-control" required="required">
 								</div>
@@ -99,6 +118,7 @@ $students = $account_obj->showStudentByClass("active", $record["class_id"]);
 								<div class="form-group">
 									<label for="total">Total <span class="red_required">*</span></label>
 									<input type="number" name="total_amount" id="total" value="<?php echo $record["total_amount"] ?>" class="form-control" placeholder="00" required="required">
+									<input type="hidden" name="inv_id" id="total" value="<?php echo $record["id"] ?>" class="form-control">
 								</div>
 								<div class="form-group">
 									<label for="payment">Payment <span class="red_required">*</span></label>
@@ -106,7 +126,7 @@ $students = $account_obj->showStudentByClass("active", $record["class_id"]);
 								</div>
 								<div class="form-group">
 									<label for="dsicount">Discount </label>
-									<input type="number" name="discount" id="discount" class="form-control" value="<?php echo $record["dsicount"] ?>" placeholder="00">
+									<input type="number" name="discount" id="discount" class="form-control" value="<?php if($record["discounr"] > 0) { echo $record["dsicount"]; }else { echo 0; }  ?>" placeholder="00">
 								</div>
 								<div class="form-group">
 									<label for="status">Select Status</label>

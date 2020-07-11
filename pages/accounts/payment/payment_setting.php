@@ -4,11 +4,20 @@ if (isset($_REQUEST["msg"])) {
         echo $alert_obj->danger();
     } elseif ($_REQUEST["msg"] == "true") {
         echo $alert_obj->success("Added Record.");
-    } else if ($_REQUEST["msg"] == "up_true") {
+    }
+    else if ($_REQUEST["msg"] == "up_true") {
         echo $alert_obj->success("Updated record.");
-    } else if ($_REQUEST["msg"] == "up_false") {
+    }
+    else if ($_REQUEST["msg"] == "up_false") {
         echo $alert_obj->danger();
-    } else {
+    }
+    else if ($_REQUEST["msg"] == "del_false") {
+        echo $alert_obj->danger();
+    }
+    else if ($_REQUEST["msg"] == "del_true") {
+        echo $alert_obj->success("Deleted Record.");
+    }
+    else {
         // do nothing.
     }
 } else if (isset($_REQUEST["status"])) {
@@ -21,17 +30,28 @@ if (isset($_REQUEST["msg"])) {
             } else {
                 echo '<script>window.location.replace("index.php?page=accounts/payment/payment_setting&msg=del_false");</script>';
             }
+        } else if (isset($_REQUEST["pId"])) {
+            require_once("php/account.php");
+            $result = $account_obj->deleteRecord("payment_settings", $_REQUEST["pId"]);
+            if ($result == true) {
+                echo '<script>window.location.replace("index.php?page=accounts/payment/payment_setting&msg=del_true");</script>';
+            } else {
+                echo '<script>window.location.replace("index.php?page=accounts/payment/payment_setting&msg=del_false");</script>';
+            }
         }
     }
 }
+
+
+
 require_once("php/account.php");
 $classes = $account_obj->fetchAllRecord("class");
 $sessions = $account_obj->fetchAllRecord("session");
 $campuses = $account_obj->fetchAllRecord("campus");
 $categories = $account_obj->fetchAllRecord("fee_category");
-$payment = $account_obj->fetchAllRecord("payment_settings");
 $categories = $account_obj->fetchAllRecord("fee_category");
 $departments = $account_obj->fetchAllRecord("department");
+$class_record = $account_obj->monthlyPaymentSetting();
 ?>
 
 <div class="row">
@@ -41,59 +61,8 @@ $departments = $account_obj->fetchAllRecord("department");
     </ul>
 </div>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        Other Fee Settings
-    </div>
-    <div class="panel-body">
-        <div class="row">
-            <form action="" class="form-inline" method="post">
-                <div class="form-group col-md-3">
-                    <label for="section">Select Department:</label><br>
-                    <select name="session" class="form-control" id="depart_id" required="required" style="width:100%;" onchange="showRecords()">
-                        <?php
-                        foreach ($departments as $depart) {
-                        ?>
-                            <option value="<?php echo $cadepartmp["id"] ?>"><?php echo $depart["name"] ?></option>
-                        <?php
-                        }
-                        ?>
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="section">Select Class:</label><br>
-                    <select name="depart_id" class="form-control" id="depart_id" required="required" style="width:100%;" onchange="showRecords()">
-                        <option value="">Select</option>
-                        <?php
-                        foreach ($classes as $class) {
-                        ?>
-                            <option value="<?php echo $class["id"] ?>"><?php echo $class["name"] ?></option>
-                        <?php
-                        }
-                        ?>
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="section">Select Category:</label><br>
-                    <select name="cat_id" class="form-control" id="cat_id" required="required" style="width:100%;" onchange="showRecords()">
-                        <option value="">Select</option>
-                        <?php
-                        foreach ($categories as $cat) {
-                        ?>
-                            <option value="<?php echo $cat["id"] ?>"><?php echo $cat["name"] ?></option>
-                        <?php
-                        }
-                        ?>
-                    </select>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
 <div class="row">
-    <div class="col-md-9 m-auto">
+    <div class="col-md-12 m-auto">
         <div class="panel panel-default">
             <div class="panel-heading"> &nbsp Fee Category</div>
             <div class="panel-body">
@@ -159,6 +128,71 @@ $departments = $account_obj->fetchAllRecord("department");
 
 <div class="panel panel-default">
     <div class="panel-heading">
+        Other Fee Settings
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <form action="" class="form-inline" method="post">
+                <div class="form-group col-md-3">
+                    <label for="depart_id">Select Department:</label><br>
+                    <select name="depart_id" class="form-control" id="depart_id" required="required" style="width:100%;" onchange="showRecords()">
+                        <?php
+                        foreach ($departments as $depart) {
+                        ?>
+                            <option value="<?php echo $depart["id"] ?>"><?php echo $depart["name"] ?></option>
+                        <?php
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="class_id">Select Class:</label><br>
+                    <select name="class_id" class="form-control" id="class_id" required="required" style="width:100%;" onchange="showRecords()">
+                        <option value="">Select</option>
+                        <?php
+                        foreach ($classes as $class) {
+                        ?>
+                            <option value="<?php echo $class["id"] ?>"><?php echo $class["name"] ?></option>
+                        <?php
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="cat_id">Select Category:</label><br>
+                    <select name="cat_id" class="form-control" id="cat_id" required="required" style="width:100%;" onchange="showRecords()">
+                        <option value="">Select</option>
+                        <?php
+                        foreach ($categories as $cat) {
+                        ?>
+                            <option value="<?php echo $cat["id"] ?>"><?php echo $cat["name"] ?></option>
+                        <?php
+                        }
+                        ?>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <hr>
+        <div style="margin: 24px 8px;">
+            <form action="php/accounts/settings.php" method="POST">
+                <table id="example" class="table table-bordered table-stripped">
+                    <thead>
+                        <tr>
+                            <th>Fee Amount</th>
+                            <th>Fine Per Day</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="record"></tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
         Monthly Fee Settings
     </div>
     <div class="panel-body">
@@ -168,40 +202,35 @@ $departments = $account_obj->fetchAllRecord("department");
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Departmet</th>
                         <th>Class Name</th>
                         <th>Fee Amount</th>
                         <th>Fine Per Day</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $count = 1;
-                    if (empty($payment)) {
-                        foreach ($classes as $record) { ?>
+                    <?php
+                    if (!empty($class_record)) {
+                        $count = 1;
+                        foreach ($class_record as $record) { ?>
                             <tr>
                                 <td><?php echo $count++; ?></td>
-                                <td><?php echo $record["name"] ?></td>
-                                <td> <input type="number" name="fees[]" class="form-control" value="" id="" required="required" /> </td>
-                                <td> <input type="number" name="fine[]" class="form-control" value="" id="" required="required" /> </td>
-                            </tr>
-                        <?php }
-                    } else {
-                        foreach ($payment as $record) { ?>
-                            <tr>
-                                <td><?php echo $count++; ?></td>
-                                <td><?php echo $account_obj->getColName("class", "name", $record["class_id"]); ?></td>
-                                <td> <input type="number" name="fees[]" class="form-control" value="<?php echo $record["fee_amount"] ?>" id="" required="required" /> </td>
-                                <td> <input type="number" name="fine[]" class="form-control" value="<?php echo $record["fine"] ?>" id="" required="required" /> </td>
+                                <td><?php echo $record["depart_name"] ?></td>
+                                <td><?php echo $record["class_name"] ?></td>
+                                <td> <input type="number" name="fees[]" class="form-control" value="<?php $class_fee = $account_obj->showFee($record["depart_id"], $record["class_id"]);
+                                                                                                    echo $class_fee[0]; ?>" id="" required="required" /> </td>
+                                <td> <input type="number" name="fine[]" class="form-control" value="<?php echo $class_fee[1]; ?>" id="" required="required" /> </td>
+                                <input type="hidden" name="class_id[]" value="<?php echo $record["class_id"] ?>">
+                                <input type="hidden" name="depart_id[]" value="<?php echo $record["depart_id"] ?>">
+                                <input type="hidden" name="cat_id[]" value="<?php echo $record["category_id"] ?>">
                             </tr>
                     <?php }
-                    } ?>
+                    }
+                    ?>
                 </tbody>
             </table>
             <div style="display: flex; justify-content: center;">
-                <input type="submit" <?php if (!empty($payment)) {
-                                            echo 'name="update_setting" value="Update Settings" ';
-                                        } else {
-                                            echo 'name="save_setting" value="Save Settings" ';
-                                        } ?> class="btn btn-primary btn-md" />
+                <input type="submit" name="update_monthly_fee" value="Update Settings" class="btn btn-primary btn-md" />
             </div>
         </form>
     </div>
@@ -209,23 +238,24 @@ $departments = $account_obj->fetchAllRecord("department");
 
 
 <script type="text/javascript">
-	function showRecords() {
-		var cat_id = document.getElementById("category_id").value;
-		var class_id = document.getElementById("class_id").value;
-		var depart_id = document.getElementById("depart_id").value;
-		if (class_id != "" && depart_id != '' && cat_id != '') {
-			$.ajax({
-				url: 'php/reports/income.php',
-				type: 'POST',
-				data: {
-					class_id: class_id,
-					depart_id: depart_id,
-					cat_id: cat_id
-				},
-				success: function(result, status) {
-					$('#record').html(result);
-				}
-			});
-		}
-	}
+    function showRecords() {
+        var cat_id = document.getElementById("cat_id").value;
+        var class_id = document.getElementById("class_id").value;
+        var depart_id = document.getElementById("depart_id").value;
+
+        if (class_id != "" && cat_id != '') {
+            $.ajax({
+                url: 'php/accounts/ajax/pay_settings.php',
+                type: 'POST',
+                data: {
+                    class_id: class_id,
+                    depart_id: depart_id,
+                    cat_id: cat_id
+                },
+                success: function(result, status) {
+                    $('#record').html(result);
+                }
+            });
+        }
+    }
 </script>

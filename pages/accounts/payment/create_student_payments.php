@@ -1,23 +1,30 @@
 <?php
 if (isset($_REQUEST["msg"])) {
-    if ($_REQUEST["msg"] == 'false') {
-        echo $alert_obj->danger();
-    } elseif ($_REQUEST["msg"] == "true") {
-        echo $alert_obj->success("Added Record.");
-    } else if ($_REQUEST["msg"] == "up_true") {
-        echo $alert_obj->success("Updated record.");
-    } else if ($_REQUEST["msg"] == "up_false") {
-        echo $alert_obj->danger();
-    } else if ($_REQUEST["msg"] == "m_true") {
-        echo $alert_obj->success("Added record.");
-    } else if ($_REQUEST["msg"] == "m_false") {
-        echo $alert_obj->danger();
-    } else {
-        // do nothing.
-    }
+	if ($_REQUEST["msg"] == 'false') {
+		echo $alert_obj->danger();
+	} elseif ($_REQUEST["msg"] == "true") {
+		echo $alert_obj->success("Added Record.");
+	}
+	else if ($_REQUEST["msg"] == "up_true") {
+		echo $alert_obj->success("Updated record.");
+	}
+	else if ($_REQUEST["msg"] == "up_false") {
+		echo $alert_obj->danger();
+	}
+	else if ($_REQUEST["msg"] == "m_true") {
+		echo $alert_obj->success("Added record.");
+	}
+	else if ($_REQUEST["msg"] == "m_false") {
+		echo $alert_obj->danger();
+	}
+	else {
+		// do nothing.
+	}
 }
 require_once("php/account.php");
 $classes = $account_obj->fetchAllRecord("class");
+$departments = $account_obj->fetchAllRecord("department");
+$categories = $account_obj->fetchAllRecord("fee_category");
 ?>
 
 <div class="row">
@@ -51,16 +58,22 @@ $classes = $account_obj->fetchAllRecord("class");
 								<br>
 								<br>
 								<div class="form-group">
-									<label for="class">Select Class <span class="red_required">*</span></label>
-									<select name="class" class="form-control" id="class" required="required" onchange="myfun(this.value)">
+									<label for="depart_id">Select Department <span class="red_required">*</span></label>
+									<select name="depart_id" class="form-control" id="depart_id" required="required" onchange="showClass(this.value)">
 										<option value="">Select</option>
 										<?php
-										foreach ($classes as $class) {
+										foreach ($departments as $depart) {
 										?>
-											<option value="<?php echo $class["id"] ?>"><?php echo $class["name"] ?></option>
+											<option value="<?php echo $depart["id"] ?>"><?php echo $depart["name"] ?></option>
 										<?php
 										}
 										?>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="class">Select Class <span class="red_required">*</span></label>
+									<select name="class" class="form-control myclass" required="required" onchange="myfun(this.value)">
+										<option value="">Select Depart First</option>
 									</select>
 								</div>
 								<div class="form-group">
@@ -70,12 +83,17 @@ $classes = $account_obj->fetchAllRecord("class");
 									</select>
 								</div>
 								<div class="form-group">
-									<label for="title">Title <span class="red_required">*</span></label>
-									<input type="text" name="title" id="title" class="form-control" placeholder="Enter title" required="required">
-								</div>
-								<div class="form-group">
-									<label for="details">Description</label>
-									<input type="text" name="details" id="details" class="form-control" placeholder="Description">
+									<label for="category">Select Category <span class="red_required">*</span></label>
+									<select name="cat_id" class="form-control" id="category" required="required">
+										<option value="">Select</option>
+										<?php
+										foreach ($categories as $cat) {
+										?>
+											<option value="<?php echo $cat["id"] ?>"><?php echo $cat["name"] ?></option>
+										<?php
+										}
+										?>
+									</select>
 								</div>
 								<div class="form-group">
 									<label for="month">Select Month</label>
@@ -101,6 +119,10 @@ $classes = $account_obj->fetchAllRecord("class");
 								<div class="form-group">
 									<label for="discount">Discount</label>
 									<input type="number" name="discount" id="discount" class="form-control" placeholder="00">
+								</div>
+								<div class="form-group">
+									<label for="discount">Fine</label>
+									<input type="number" name="fine" id="fine" class="form-control" placeholder="00">
 								</div>
 								<div class="form-group">
 									<label for="status">Select Status</label>
@@ -137,13 +159,32 @@ $classes = $account_obj->fetchAllRecord("class");
 							<br>
 							<form action="php/accounts/payment.php" method="POST" class="form-group">
 								<div class="form-group">
-									<label for="class">Select Class <span class="red_required">*</span></label>
-									<select name="class" class="form-control" id="class" required="required">
+									<label for="depart_id">Select Department <span class="red_required">*</span></label>
+									<select name="depart_id" class="form-control" id="depart_id" required="required" onchange="showClass(this.value)">
 										<option value="">Select</option>
 										<?php
-										foreach ($classes as $class) {
+										foreach ($departments as $depart) {
 										?>
-											<option value="<?php echo $class["id"] ?>"><?php echo $class["name"] ?></option>
+											<option value="<?php echo $depart["id"] ?>"><?php echo $depart["name"] ?></option>
+										<?php
+										}
+										?>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="class">Select Class <span class="red_required">*</span></label>
+									<select name="class" class="form-control myclass" required="required" onchange="myfun(this.value)">
+										<option value="">Select Depart First</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="category">Select Category <span class="red_required">*</span></label>
+									<select name="cat_id" class="form-control" id="category" required="required">
+										<option value="">Select</option>
+										<?php
+										foreach ($categories as $cat) {
+										?>
+											<option value="<?php echo $cat["id"] ?>"><?php echo $cat["name"] ?></option>
 										<?php
 										}
 										?>
@@ -152,14 +193,6 @@ $classes = $account_obj->fetchAllRecord("class");
 								<div class="form-group">
 									<label for="month">Select Month <span class="red_required">*</span></label>
 									<input type="month" name="month" id="month" class="form-control" required="required">
-								</div>
-								<div class="form-group">
-									<label for="title">Title <span class="red_required">*</span></label>
-									<input type="text" name="title" id="title" class="form-control" placeholder="Description" required="required">
-								</div>
-								<div class="form-group">
-									<label for="details">Description </label>
-									<input type="text" name="details" id="details" class="form-control" placeholder="Description" required="required">
 								</div>
 								<div class="form-group">
 									<label for="total">Total <span class="red_required">*</span></label>
@@ -180,7 +213,7 @@ $classes = $account_obj->fetchAllRecord("class");
 									<label for="method">Method </label>
 									<select name="method" id="method" class="form-control" required="required">
 										<option value="null">Select Method</option>
-										<option value="cash">Cash</option>
+										<option value="cash" selected>Cash</option>
 										<option value="cheque">Cheque</option>
 										<option value="card">Card</option>
 									</select>
@@ -206,6 +239,19 @@ $classes = $account_obj->fetchAllRecord("class");
 			},
 			success: function(result, status) {
 				$('#student').html(result);
+			}
+		});
+	}
+
+	function showClass(depart) {
+		$.ajax({
+			url: 'php/accounts/get_data.php',
+			type: 'POST',
+			data: {
+				depart: depart
+			},
+			success: function(result, status) {
+				$('.myclass').html(result);
 			}
 		});
 	}

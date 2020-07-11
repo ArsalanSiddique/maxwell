@@ -18,7 +18,7 @@ $students = $report_obj->showStudentBySection("active", $_REQUEST["cId"], $_REQU
             <p><span style="font-size:20px;font-family:tahoma;color:black;"> Report For Session: <?php echo $report_obj->getColName("session", "session_start", $_SESSION["session_id"]) . " - " . $report_obj->getColName("session", "session_end", $_SESSION["session_id"]); ?></span></p>
             <p style="font-family:tahoma;color:black;text-transform:capitalize"> <b> Section: </b>&nbsp;&nbsp;<?php echo $report_obj->getColName("section", "name", $_REQUEST["sId"]) . " - " . $report_obj->getColName("section", "nick_name", $_REQUEST["sId"]); ?></p>
             <p style="font-family:tahoma;color:black;text-transform:capitalize"> <b> Monthly Fees: </b>&nbsp;&nbsp;<?php echo $monthly_fees = $report_obj->monthlyFees($_REQUEST["cId"]); ?></p>
-            <p style="font-family:tahoma;color:black;text-transform:capitalize"> <b> Total Fees: </b>&nbsp;&nbsp;<?php echo ($monthly_fees*12) ?></p>
+            <p style="font-family:tahoma;color:black;text-transform:capitalize"> <b> Total Fees: </b>&nbsp;&nbsp;<?php echo ($monthly_fees * 12) . " Per Student" ?></p>
         </div>
     </div>
 </div>
@@ -39,7 +39,9 @@ $students = $report_obj->showStudentBySection("active", $_REQUEST["cId"], $_REQU
                     $monthName = $dateObj->format('F');
                     echo "<th> $monthName </th>";
                 } ?>
+
                 <th>Total Paid Fees</th>
+                <th>Total Other Fees</th>
                 <th>Total Due Fess</th>
                 <th>Actions</th>
             </tr>
@@ -53,7 +55,9 @@ $students = $report_obj->showStudentBySection("active", $_REQUEST["cId"], $_REQU
                     <td><?php echo $count++; ?></td>
                     <td><?php echo $data["name"] ?></td>
                     <td><?php echo $data["father_name"] ?></td>
-                    <?php $total_fees = 0;
+                    <?php
+                    $total_fees = 0;
+                    $other_fee = 0;
                     for ($i = 1; $i <= 12; $i++) {
 
                         $monthNum  = str_pad($i, 2, "0", STR_PAD_LEFT);
@@ -65,9 +69,11 @@ $students = $report_obj->showStudentBySection("active", $_REQUEST["cId"], $_REQU
                         $fees = $report_obj->fetchMonthlyPaymentOfStudent($student_id, $session_id, $month);
                         $total_fees += $fees;
                         echo "<td> $fees </td>";
+                        $other_fee += $report_obj->StudentOtherFees($student_id, $session_id, $month);
                     } ?>
                     <td><?php echo $total_fees ?></td>
-                    <td><?php echo ($monthly_fees*12)-$total_fees ?></td>
+                    <td><?php echo $other_fee ?></td>
+                    <td><?php echo (($monthly_fees * 12)+$other_fee) - $total_fees ?></td>
                     <td>
                         <a href="index.php?page=reports/student_summary&sId=<?php echo $row["student_id"] ?>&cId=<?php echo $row["class_id"] ?>"><i class="fa fa-eye btn-view"></i></a> &nbsp;
                     </td>

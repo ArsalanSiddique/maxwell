@@ -7,7 +7,9 @@
         $status = "active";
         $result = $account_obj->showStudentByClass($status, $class_id);
         if($result == true) {
+            echo "<option>Select</option>";
             foreach($result as $row) {
+                
                 ?><option value="<?php echo $row["id"] ?>"><?php echo $row["name"] ?></option><?php
             }
         }
@@ -17,6 +19,16 @@
         $result = $academics_obj->getClass($campus_id);
         if($result == true) {
             foreach($result as $row) {
+                ?><option value="<?php echo $row["id"] ?>"><?php echo $row["name"] ?></option><?php
+            }
+        }
+    }else if(isset($_POST["depart"])) {
+        extract($_POST);
+        $result = $account_obj->showClass($depart);
+        if($result == true) {
+            echo "<option>Select</option>";
+            foreach($result as $row) {
+                
                 ?><option value="<?php echo $row["id"] ?>"><?php echo $row["name"] ?></option><?php
             }
         }

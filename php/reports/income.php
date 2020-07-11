@@ -14,6 +14,7 @@ if (!empty($depart_id) && !empty($month)) {
             <td><?php echo $row["section_name"] ?></td>
             <td> <?php $students = $report_obj->showStudentBySection("active", $row["class_id"], $row["section_id"]); echo mysqli_num_rows($students); ?> </td>
             <td> <?php $fees = $report_obj->CountFees($row["class_id"], $row["section_id"], $month); print($fees[0]) ?> </td>
+            <td> <?php print($fees[3]) ?> </td>
             <td> <?php print($fees[1]) ?> </td>
             <td> <?php print($fees[2]) ?> </td>
             <td>

@@ -65,12 +65,12 @@ class reports extends crud
         session_start();
         $table = 'students';
         $campus_id = $_SESSION["campus_id"];
-        if($section_id != "") {
+        if ($section_id != "") {
             $where = "`campus_id` = $campus_id AND `class_id` = $class_id AND status = '$status' AND section_id = '$section_id'";
-        }else {
+        } else {
             $where = "`campus_id` = $campus_id AND `class_id` = $class_id AND status = '$status'";
         }
-        
+
         $where .= " AND deleted_at IS NULL";
         $order = "id desc";
         $result = $this->select($table, $where, NULL, $order, NULL, NULL);
@@ -81,24 +81,25 @@ class reports extends crud
         }
     }
 
-   	    function CountFees($class_id, $section_id, $month)
+    function CountFees($class_id, $section_id, $month)
     {
 
         $monthlyFees = 0;
         $totalPaidFees = 0;
         $totalMontlhyFees = 0;
         $totalDueFees = 0;
-        
+
         $monthlyFees = $this->monthlyFees($class_id);
-        
+        $other_fee = $this->otherFees($class_id, $month);
+
         $order = "id DESC";
         $where = "class_id = $class_id AND section_id = $section_id AND deleted_at IS NULL";
         $result = $this->select("students", "$where", NULL, $order, NULL, NULL);
         if (mysqli_num_rows($result) > 0) {
             $totalStudents = mysqli_num_rows($result);
             $totalMontlhyFees = $monthlyFees * $totalStudents;
-            
-            foreach($result as $data) {
+
+            foreach ($result as $data) {
                 $table = "payment";
                 $student_id = $data["id"];
                 $where = "class_id = $class_id AND month = '$month' AND student_id = '$student_id' AND status = 'paid' AND deleted_at IS NULL";
@@ -109,12 +110,11 @@ class reports extends crud
                     $totalPaidFees += $row["paid_amount"];
                 }
             }
-            $totalDueFees = $totalMontlhyFees - $totalPaidFees;
-            
-            $data = [$totalMontlhyFees, $totalPaidFees, $totalDueFees];
+            $totalDueFees = (($totalMontlhyFees+$other_fee) - $totalPaidFees);
+
+            $data = [$totalMontlhyFees, $totalPaidFees, $totalDueFees, $other_fee];
             return $data;
-            
-        }else {
+        } else {
             $data = [0, 0, 0];
             return $data;
         }
@@ -304,7 +304,8 @@ class reports extends crud
         }
     }
 
-    function fetchMonthlyPaymentOfStudent($student_id, $session_id, $month) {
+    function fetchMonthlyPaymentOfStudent($student_id, $session_id, $month)
+    {
 
         $table = "payment";
         $where = "student_id = '$student_id' AND session_id = '$session_id' AND month = '$month' AND deleted_at IS NULL";
@@ -318,9 +319,10 @@ class reports extends crud
         }
     }
 
-    function monthlyFees($class_id) {
+    function monthlyFees($class_id)
+    {
         $table = "payment_settings";
-        $where = " class_id = '$class_id' AND deleted_at IS NULL";
+        $where = " class_id = '$class_id' AND category_id = 1 AND deleted_at IS NULL";
         $result = $this->select($table, $where, null, null, null, null);
         if (mysqli_num_rows($result) > 0) {
             $row = mysqli_fetch_array($result);
@@ -328,6 +330,56 @@ class reports extends crud
         } else {
             return 00;
         }
+    }
+
+    function otherFees($class_id, $month)
+    {
+        $results = $this->fetchAllRecord("fee_category");
+        $other_fee = 0;
+        if (mysqli_num_rows($results) > 0) {
+            
+            foreach ($results as $data) {
+                $table = "payment";
+                $category_id = $data["id"];
+                $where = " class_id = '$class_id' AND category_id = $category_id AND month = '$month' AND deleted_at IS NULL";
+                $result = $this->select($table, $where, null, null, null, null);
+                if (mysqli_num_rows($result) > 0) {
+                    foreach($result as $data) {
+                        $other_fee += $data["total_amount"];
+                    }
+                } else {
+                    return $other_fee;
+                }
+            }
+        }else {
+            return $other_fee;
+        }
+        return $other_fee;
+    }
+
+    function studentOtherFees($student_id, $session_id, $month)
+    {
+        $results = $this->fetchAllRecord("fee_category");
+        $other_fee = 0;
+        if (mysqli_num_rows($results) > 0) {
+            
+            foreach ($results as $data) {
+                $table = "payment";
+                $category_id = $data["id"];
+                $where = " student_id = '$student_id' AND category_id = $category_id AND session_id = $session_id AND month = '$month' AND deleted_at IS NULL";
+                $result = $this->select($table, $where, null, null, null, null);
+                if (mysqli_num_rows($result) > 0) {
+                    foreach($result as $data) {
+                        $other_fee += $data["total_amount"];
+                    }
+                } else {
+                    return $other_fee;
+                }
+            }
+        }else {
+            return $other_fee;
+        }
+        return $other_fee;
     }
 }
 $report_obj = new reports();

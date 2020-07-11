@@ -14,7 +14,8 @@ if (isset($_REQUEST["status"])) {
 }
 
 require_once("php/account.php");
-$classes = $account_obj->fetchAllRecord("class");
+$departs = $account_obj->fetchAllRecord("department");
+$cats = $account_obj->fetchAllRecord("fee_category");
 
 ?>
 
@@ -28,17 +29,23 @@ $classes = $account_obj->fetchAllRecord("class");
 	<div class="row">
 		<form action="" class="form-inline" method="post">
 			<div class="form-group col-md-3">
-				<label for="class">Select Class:</label><br>
-				<select name="class_id" class="form-control" id="myclass" required="required" style="width:100%;" onchange="showRecord()">
-					<option value="">Select Class</option>
+				<label for="class">Select Department:</label><br>
+				<select name="depart_id" class="form-control" id="depart_id" required="required" style="width:100%;" onchange="showClass(this.value)">
+					<option value="">Select Department</option>
 					<?php
-					foreach ($classes as $class) {
+					foreach ($departs as $depart) {
 					?>
-						<option value="<?php echo $class["id"] ?>"><?php echo $class["name"] ?></option>
+						<option value="<?php echo $depart["id"] ?>"><?php echo $depart["name"] ?></option>
 					<?php
 					}
 
 					?>
+				</select>
+			</div>
+			<div class="form-group col-md-3">
+				<label for="class">Select Class:</label><br>
+				<select name="class_id" class="form-control" id="myclass" required="required" style="width:100%;" onchange="showRecord()">
+					<option value="">Select Class</option>
 				</select>
 			</div>
 			<div class="form-group col-md-3">
@@ -65,9 +72,7 @@ $classes = $account_obj->fetchAllRecord("class");
 				<th>Father Name</th>
 				<th>Month</th>
 				<th>Amount</th>
-				<th>Paid</th>
-				<th>Status</th>
-				<th>Method</th>
+				<th>Type</th>
 				<th>Actions</th>
 			</tr>
 		</thead>
@@ -80,20 +85,32 @@ $classes = $account_obj->fetchAllRecord("class");
 	function showRecord() {
 		var class_id = document.getElementById("myclass").value;
 		var month = document.getElementById("month").value;
-		if (class_id != "" && month != "") {
+		var depart_id = document.getElementById("depart_id").value;
+		if (class_id != "" && month != "" && depart_id != "") {
 			$.ajax({
 				url: 'php/accounts/paymet_record.php',
 				type: 'POST',
 				data: {
 					class_id: class_id,
+					depart_id: depart_id,
 					month: month,
 				},
 				success: function(result, status) {
 					$('#payment_record').html(result);
 				}
 			});
-		} else {
-
 		}
+	}
+	function showClass(depart) {
+		$.ajax({
+			url: 'php/accounts/get_data.php',
+			type: 'POST',
+			data: {
+				depart: depart
+			},
+			success: function(result, status) {
+				$('#myclass').html(result);
+			}
+		});
 	}
 </script>
