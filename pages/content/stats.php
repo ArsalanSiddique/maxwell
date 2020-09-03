@@ -17,7 +17,7 @@ $count_parents = mysqli_num_rows($parents);
 $due_fee = $account_obj->fetchDueFees();
 $total_due_fee = 0;
 foreach ($due_fee as $data) {
-	$total_due_fee += ($data["paid_amount"] + $data["fine"]) - $data["discount"];
+	$total_due_fee += ($data["total_amount"] - $data["paid_amount"] + $data["fine"]) - $data["discount"];
 }
 
 

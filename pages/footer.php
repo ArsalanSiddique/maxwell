@@ -236,7 +236,6 @@
             if ($(this).val() != '') {
                 var action = $(this).attr("id");
                 var query = $(this).val();
-                alert(action);
                 var result = '';
                 if (action == "class") {
                     result = 'students';

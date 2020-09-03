@@ -4,29 +4,31 @@ require_once('crud.php');
 class accounts extends crud
 {
 
-    public function showFee($depart_id,$class_id) {
+    public function showFee($depart_id, $class_id)
+    {
         $table = "payment_settings";
         $where = "depart_id = $depart_id AND class_id = $class_id AND deleted_at IS NULL AND category_id = 1 AND deleted_at IS NULL";
         $result = $this->select($table, $where, null, null, null, null);
-        if(mysqli_num_rows($result) > 0) {
+        if (mysqli_num_rows($result) > 0) {
             $result = mysqli_fetch_array($result);
             return [$result["fee_amount"], $result["fine"]];
-        }else {
+        } else {
             return false;
         }
     }
 
-    function checkRecord($depart_id, $class_id) {
+    function checkRecord($depart_id, $class_id)
+    {
         $table = "payment_settings";
         $where = "depart_id = $depart_id AND class_id = $class_id AND category_id = 1 AND deleted_at IS NULL";
         $result = $this->select($table, $where, null, null, null, null);
-        if(mysqli_num_rows($result) > 0)  {
+        if (mysqli_num_rows($result) > 0) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
-    
+
     function addRecord($table, $data)
     {
         $result = $this->insert($table, $data, NULL);
@@ -50,14 +52,15 @@ class accounts extends crud
         }
     }
 
-    function paymentSetting($depart_id, $class_id, $cat_id) {
+    function paymentSetting($depart_id, $class_id, $cat_id)
+    {
         $table = "payment_settings";
         $where = "depart_id = $depart_id AND class_id = $class_id AND category_id = $cat_id AND deleted_at IS NULL";
         $result = $this->select($table, $where, null, null, null, null);
-        if($result == true) {
+        if ($result == true) {
             $row = mysqli_fetch_array($result);
             return $row;
-        }else {
+        } else {
             return false;
         }
     }
@@ -96,13 +99,13 @@ class accounts extends crud
             return false;
         }
     }
-    
+
 
     function deleteRecord($table, $id)
     {
         $where = " id = '$id'";
         $cols = "deleted_at = now()";
-        
+
         $result = $this->update_time($table, $cols, $where);
         if ($result == true) {
             return true;
@@ -111,13 +114,14 @@ class accounts extends crud
         }
     }
 
-    function showClass($depart_id) {
+    function showClass($depart_id)
+    {
         $table = "class";
         $where = "depart_id = $depart_id AND deleted_at IS NULL";
         $result = $this->select($table, $where, null, null, null, null);
-        if(mysqli_num_rows($result) > 0) {
+        if (mysqli_num_rows($result) > 0) {
             return $result;
-        }else {
+        } else {
             return false;
         }
     }
@@ -233,7 +237,7 @@ class accounts extends crud
         $table2 = "students";
         $behave1 = "student_id";
         $behave2 = "id";
-        $column = ["students.reg_no", "students.name", "students.father_name as father", "payment.paid_amount", "payment.total_amount",  "payment.discount", "payment.status", "payment.method", "payment.id", "payment.month", "payment.created_at", "payment.fine", "payment.title", "payment.id as recipt"];
+        $column = ["students.reg_no", "students.name", "students.father_name as father", "payment.paid_amount", "payment.total_amount",  "payment.discount", "payment.status", "payment.method", "payment.id", "payment.month", "payment.created_at", "payment.category_id", "payment.fine", "payment.id as recipt"];
         $where = "payment.student_id = $student_id AND payment.deleted_at IS NULL";
         $result =  $this->leftJoin($table1, $table2, $column, $behave1, $behave2, $where);
         if (mysqli_num_rows($result) > 0) {
@@ -310,7 +314,7 @@ class accounts extends crud
     function fetchDueFees()
     {
         $table = "payment";
-        $where = "created_at <> updated_at AND total_amount > paid_amount AND deleted_at IS NULL";
+        $where = "status = 'Unpaid' AND deleted_at IS NULL";
         $result = $this->select($table, $where, null, null, null, null);
         if (mysqli_num_rows($result) > 0) {
             return $result;
@@ -332,7 +336,8 @@ class accounts extends crud
     }
 
 
-    function monthlyPaymentSetting() {
+    function monthlyPaymentSetting()
+    {
         $table1 = "department";
         $table2 = "class";
         $where = "class.deleted_at IS NULL AND department.deleted_at IS NULL AND class.name IS NOT NULL";
@@ -340,9 +345,9 @@ class accounts extends crud
         $behave2 = "depart_id";
         $col = ["department.id as depart_id", "class.id as class_id", "department.name as depart_name", "class.name as class_name"];
         $result = $this->leftJoin($table1, $table2, $col, $behave1, $behave2, $where);
-        if(mysqli_num_rows($result) > 0) {
+        if (mysqli_num_rows($result) > 0) {
             return $result;
-        }else {
+        } else {
             return false;
         }
     }
@@ -390,10 +395,9 @@ class accounts extends crud
 
         if (mysqli_num_rows($result) > 0) {
             return $result;
-        }else {
+        } else {
             return false;
         }
     }
-
 }
 $account_obj = new accounts();

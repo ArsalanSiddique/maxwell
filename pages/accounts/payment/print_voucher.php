@@ -10,14 +10,17 @@ $fine = $account_obj->fetchFine($student_id, $student["class_id"]);
 
 
 $records = $account_obj->showPaymentHistory($student_id);
+
 foreach ($records as $record) {
-    $newDate = date("F-Y", strtotime($record["created_at"]));
+
+
+    $newDate = date("M-y", strtotime($record["created_at"]));
     $due_date = "15-" . $newDate;
 
-    $issue_date = date("d-F-Y", strtotime($record["created_at"]));
+    $issue_date = date("d-M-y", strtotime($record["created_at"]));
 
     $month_number = date("n", strtotime($record["created_at"]));
-    $year = date("Y", strtotime($record["created_at"]));
+    $year = date("y", strtotime($record["created_at"]));
     $d = cal_days_in_month(CAL_GREGORIAN, $month_number, $year);
     $validate = $d . "-" . $newDate;
 
@@ -88,13 +91,22 @@ foreach ($records as $record) {
                         <tbody>
                             <tr style="background-color: grey; color: white;">
                                 <td><b>Title</b></td>
-                                <td><b><?php echo $record["title"] ?></b></td>
+                                <td><b>Fees</b></td>
                             </tr>
-                            <tr>
-                                <td><b><?php echo $newDate = date("F-Y", strtotime($record["month"]));; ?> </b></td>
-                                <td><b><?php $total_amount = $record["total_amount"];
-                                        echo number_format($total_amount, 2); ?></b></td>
-                            </tr>
+                            <?php
+                            $total_payable_amount = 0;
+                            foreach ($records as $data) {
+                            ?>
+                                <tr>
+                                    <td><b><?php $cat_record = $account_obj->getRecordById("fee_category", $data["category_id"]);
+                                            echo $cat_record["name"]  ?> </b></td>
+                                    <td><b><?php $total_amount = $data["total_amount"];
+                                            $total_payable_amount += $total_amount;
+                                            echo number_format($total_amount, 2); ?></b></td>
+                                </tr>
+                            <?php
+                            }
+                            ?>
                             <tr>
                                 <td><b>Paid Amount</b></td>
                                 <td><b><?php $paid_amount = $record["paid_amount"];
@@ -107,11 +119,12 @@ foreach ($records as $record) {
                             </tr>
                             <tr>
                                 <td><b>Discount</b></td>
-                                <td><b><?php $discount += $record["discount"]; echo number_format($discount, 2); ?></b></td>
+                                <td><b><?php $discount += $record["discount"];
+                                        echo number_format($discount, 2); ?></b></td>
                             </tr>
                             <tr>
                                 <td><b>Total Amount</b></td>
-                                <td><b><?php $payable_amount = ($total_amount + $paid_amount + $fine) - $discount;
+                                <td><b><?php $payable_amount = ($total_payable_amount+$fine)-($paid_amount+$discount);
                                         echo number_format($payable_amount, 2); ?></b></td>
                             </tr>
                         </tbody>
@@ -152,13 +165,22 @@ foreach ($records as $record) {
                         <tbody>
                             <tr style="background-color: grey; color: white;">
                                 <td><b>Title</b></td>
-                                <td><b><?php echo $record["title"] ?></b></td>
+                                <td><b>Fees</b></td>
                             </tr>
-                            <tr>
-                                <td><b><?php echo $newDate = date("F-Y", strtotime($record["month"]));; ?> </b></td>
-                                <td><b><?php $total_amount = $record["total_amount"];
-                                        echo number_format($total_amount, 2); ?></b></td>
-                            </tr>
+                            <?php
+                            $total_payable_amount = 0;
+                            foreach ($records as $data) {
+                            ?>
+                                <tr>
+                                    <td><b><?php $cat_record = $account_obj->getRecordById("fee_category", $data["category_id"]);
+                                            echo $cat_record["name"]  ?> </b></td>
+                                    <td><b><?php $total_amount = $data["total_amount"];
+                                            $total_payable_amount += $total_amount;
+                                            echo number_format($total_amount, 2); ?></b></td>
+                                </tr>
+                            <?php
+                            }
+                            ?>
                             <tr>
                                 <td><b>Paid Amount</b></td>
                                 <td><b><?php $paid_amount = $record["paid_amount"];
@@ -176,7 +198,7 @@ foreach ($records as $record) {
                             </tr>
                             <tr>
                                 <td><b>Total Amount</b></td>
-                                <td><b><?php echo  number_format($payable_amount, 2) ?></b></td>
+                                <td><b><?php echo  number_format(($total_payable_amount + $fine) - ($paid_amount+$discount), 2) ?></b></td>
                             </tr>
                         </tbody>
                         <tfoot>

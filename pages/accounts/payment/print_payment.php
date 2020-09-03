@@ -11,13 +11,13 @@ $fine = $account_obj->fetchFine($student_id, $student["class_id"]);
 
 $records = $account_obj->showPaymentHistory($student_id);
 foreach ($records as $record) {
-    $newDate = date("F-Y", strtotime($record["created_at"]));
+    $newDate = date("M-y", strtotime($record["created_at"]));
     $due_date = "15-" . $newDate;
 
-    $issue_date = date("d-F-Y", strtotime($record["created_at"]));
+    $issue_date = date("d-M-y", strtotime($record["created_at"]));
 
     $month_number = date("n", strtotime($record["created_at"]));
-    $year = date("Y", strtotime($record["created_at"]));
+    $year = date("y", strtotime($record["created_at"]));
     $d = cal_days_in_month(CAL_GREGORIAN, $month_number, $year);
     $validate = $d . "-" . $newDate;
 

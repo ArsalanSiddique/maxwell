@@ -4,20 +4,15 @@ if (isset($_REQUEST["msg"])) {
 		echo $alert_obj->danger();
 	} elseif ($_REQUEST["msg"] == "true") {
 		echo $alert_obj->success("Added Record.");
-	}
-	else if ($_REQUEST["msg"] == "up_true") {
+	} else if ($_REQUEST["msg"] == "up_true") {
 		echo $alert_obj->success("Updated record.");
-	}
-	else if ($_REQUEST["msg"] == "up_false") {
+	} else if ($_REQUEST["msg"] == "up_false") {
 		echo $alert_obj->danger();
-	}
-	else if ($_REQUEST["msg"] == "m_true") {
+	} else if ($_REQUEST["msg"] == "m_true") {
 		echo $alert_obj->success("Added record.");
-	}
-	else if ($_REQUEST["msg"] == "m_false") {
+	} else if ($_REQUEST["msg"] == "m_false") {
 		echo $alert_obj->danger();
-	}
-	else {
+	} else {
 		// do nothing.
 	}
 }
@@ -25,6 +20,7 @@ require_once("php/account.php");
 $classes = $account_obj->fetchAllRecord("class");
 $departments = $account_obj->fetchAllRecord("department");
 $categories = $account_obj->fetchAllRecord("fee_category");
+$campuses = $account_obj->fetchAllRecord("campus");
 ?>
 
 <div class="row">

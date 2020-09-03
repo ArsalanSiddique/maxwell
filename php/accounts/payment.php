@@ -20,18 +20,18 @@ if (isset($_POST["fee_payment"])) {
 
     $students = $account_obj->showStudentByClass("active", $class);
     foreach ($students as $student) {
+
         $filter = $account_obj->checkPayment($depart_id, $class, $student["id"], $month, $cat_id);
 
         if ($filter != true) {
-            
+
             $table = "payment";
-            $data = [null, $_SESSION["session_id"], $_SESSION["campus_id"], $depart_id, $class, $cat_id,$student["id"], $total_amount, $paid_amount, '00', '00', $status, $method, $month, null, null, null];
+            $data = [null, $_SESSION["session_id"], $_SESSION["campus_id"], $depart_id, $class, $cat_id, $student["id"], $total_amount, $paid_amount, '00', '00', $status, $method, $month, null, null, null];
             $result = $account_obj->addRecord($table, $data);
             if ($result == false) {
                 header("Location: ../../index.php?page=accounts/payment/create_student_payments&msg=m_false");
             }
-
-        }else {
+        } else {
             // do not generate payment for this student.
         }
     }
@@ -48,7 +48,7 @@ if (isset($_POST["fee_payment"])) {
     if ($result == true) {
         header("Location: ../../index.php?page=accounts/payment/edit_payment&pId=$inv_id&msg=up_true");
     } else {
-        // header("Location: ../../index.php?page=accounts/payment/edit_payment&pId=$inv_id&msg=up_false");
+        header("Location: ../../index.php?page=accounts/payment/edit_payment&pId=$inv_id&msg=up_false");
     }
 } else if (isset($_POST["save_voucher"])) {
     require_once("../account.php");
@@ -57,12 +57,14 @@ if (isset($_POST["fee_payment"])) {
     $records = $account_obj->showPaymentHistory($student_id);
     $i = 0;
     foreach ($records as $record) {
-        $table  = "payment";
-        $data = ["paid_amount" => $paid_amount[$i], "fine" => $fine[$i], "discount" => $discount[$i], "status" => "paid", "method" => "cash"];
-        $result = $account_obj->updateRecord($table, $data, $record["id"]);
-        $i++;
-        if ($result == false) {
-            header("Location: ../../index.php?page=accounts/payment/view_payment&pId=$inv_id&msg=up_false");
+        if ($record["paid_amount"] < $record["total_amount"]) {
+            $table  = "payment";
+            $data = ["paid_amount" => $paid_amount[$i], "fine" => $fine[$i], "discount" => $discount[$i], "status" => "paid", "method" => "cash"];
+            $result = $account_obj->updateRecord($table, $data, $record["id"]);
+            $i++;
+            if ($result == false) {
+                header("Location: ../../index.php?page=accounts/payment/view_payment&pId=$inv_id&msg=up_false");
+            }
         }
     }
 

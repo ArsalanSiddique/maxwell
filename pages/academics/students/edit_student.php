@@ -3,8 +3,9 @@
 require_once("php/academics.php");
 $student =  $academics_obj->getStudent($_REQUEST["sId"]);
 $classes = $academics_obj->showAllClass();
-$sections = $academics_obj->showSectionByClass($student["class_id"]);
 $campus = $academics_obj->showAllCampus();
+$sections = $academics_obj->showSectionByClass($student["class_id"]);
+$parent = $academics_obj->fetchAllRecord("parents");
 
 ?>
 <div class="row">
@@ -52,7 +53,17 @@ $campus = $academics_obj->showAllCampus();
                     <input type="radio" name="gender" id="" value="Female" <?php if ($student["gender"] == "Female") {
                                                                                 echo "checked";
                                                                             } ?> /> Female </div>
-
+                <div class="form-group">
+                    <label for="age">Status</label>
+                    <select class="form-control" name="status">
+                        <option class="active" <?php if ($student["status"] == "active") {
+                                                    echo "checked";
+                                                } ?>>Active</option>
+                        <option class="in-active" <?php if ($student["status"] == "in-active") {
+                                                        echo "checked";
+                                                    } ?>>In Active</option>
+                    </select>
+                </div>
             </fieldset>
             <fieldset>
                 <legend>ADDRESS INFORMATION</legend>
@@ -90,7 +101,7 @@ $campus = $academics_obj->showAllCampus();
                 </div>
                 <div class="form-group">
                     <label for="section">Campus</label><span class="red_required">*</span>
-                    <select name="campus" id="" class="form-control" onchange="changeClass(this.value)">
+                    <select name="campus_id" id="" class="form-control" onchange="changeClass(this.value)">
                         <option value="">Select Campus</option>
                         <?php foreach ($campus as $camp) { ?>
                             <option value="<?php echo $camp["id"] ?>" <?php if ($student["campus_id"] == $camp["id"]) {

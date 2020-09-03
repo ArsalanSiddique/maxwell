@@ -28,6 +28,7 @@ $cats = $account_obj->fetchAllRecord("fee_category");
 <div class="thumbnail" style="padding:24px;">
 	<div class="row">
 		<form action="" class="form-inline" method="post">
+			
 			<div class="form-group col-md-3">
 				<label for="class">Select Department:</label><br>
 				<select name="depart_id" class="form-control" id="depart_id" required="required" style="width:100%;" onchange="showClass(this.value)">
@@ -72,6 +73,7 @@ $cats = $account_obj->fetchAllRecord("fee_category");
 				<th>Father Name</th>
 				<th>Month</th>
 				<th>Amount</th>
+				<th>Status</th>
 				<th>Type</th>
 				<th>Actions</th>
 			</tr>
@@ -101,6 +103,7 @@ $cats = $account_obj->fetchAllRecord("fee_category");
 			});
 		}
 	}
+
 	function showClass(depart) {
 		$.ajax({
 			url: 'php/accounts/get_data.php',

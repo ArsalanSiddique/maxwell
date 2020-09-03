@@ -20,11 +20,9 @@ $student_id = $account_obj->getColName("payment", "student_id", $payment_id);
 $student = $account_obj->getRecordById("students", $student_id);
 $fine = $account_obj->fetchFine($student_id, $student["class_id"]);
 
-
-
-
 $records = $account_obj->showPaymentHistory($student_id);
 foreach ($records as $record) {
+    
     $newDate = date("F-Y", strtotime($record["created_at"]));
     $due_date = "15-" . $newDate;
 

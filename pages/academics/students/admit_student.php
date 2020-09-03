@@ -36,11 +36,11 @@
             <?php
             if (isset($_REQUEST["status"])) {
             ?>
-              <input type="text" name="name" value="<?php echo $_REQUEST["status"]; ?>" />
+              <input type="hidden" name="status" value="<?php echo $_REQUEST["status"]; ?>" />
             <?php
             } else {
             ?>
-              <input type="text" name="name" value="in-active" />
+              <input type="hidden" name="status" value="active" />
             <?php
             }
             ?>

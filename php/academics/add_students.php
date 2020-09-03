@@ -36,7 +36,7 @@ if (isset($_POST["submit_std"])) {
         $file = "images/students/dummy.png";
     }
 
-    $data = [null, $_SESSION["campus_id"], $class, $section, $regist_no, $status, $name, $email, $father, $birth, $religion, $phone, $gender, $file, $address, $city, $country, null, null, null];
+    $data = [null, $_SESSION["campus_id"], $class, $section, $parent_id, $regist_no, $status, $name, $email, $father, $birth, $religion, $phone, $gender, $file, $address, $city, $country, null, null, null];
     $result = $academics_obj->addStudents($data);
     if ($result == true) {
         header("Location: ../../index.php?page=academics/students/admit_student&msg=true");
@@ -59,7 +59,7 @@ if (isset($_POST["submit_std"])) {
         $file = "images/students/dummy.png";
     }
 
-    $data = ["campus_id" => $campus, "class_id" => $class, "section_id" => $section, "parent_id" => $parent, "reg_no" => $regist_no, "status" => "active", "name" => $name, "email" => $email, "father_name" => $father, "dob" => $birth, "religion" => $religion, "phone" => $phone, "gender" => $gender, "photo" => $file, "address" => $address, "city" => $city, "country" => $country];
+    $data = ["status" => $status, "campus_id" => $campus_id, "class_id" => $class, "section_id" => $section, "parent_id" => $parent_id, "reg_no" => $regist_no, "status" => "active", "name" => $name, "email" => $email, "father_name" => $father, "dob" => $birth, "religion" => $religion, "phone" => $phone, "gender" => $gender, "photo" => $file, "address" => $address, "city" => $city, "country" => $country];
     $result = $academics_obj->editStudent($data, $std_id);
     if ($result == true) {
         header("Location: ../../index.php?page=academics/students/student_information&msg=true");
