@@ -75,7 +75,8 @@ $departments = $academics_obj->fetchAllRecord("department");
 									<td><?php echo $academics_obj->getColName("teachers", "name",  $rows["class_teacher"]) ?></td>
 									<td>
 										<a href="index.php?page=academics/class/edit_class&cId=<?php echo $rows["id"] ?>"><i class="fa fa-pencil btn-edit"></i></a> &nbsp;
-										<a href="index.php?page=academics/class/manage_class&status=delete&cId=<?php echo $rows["id"] ?>" target="_self" data-toggle="confirmation" data-placement="left"><i class="fa fa-trash btn-trash"></i></a>
+										<a href="index.php?page=academics/class/manage_class&status=delete&cId=<?php echo $rows["id"] ?>" target="_self" data-toggle="confirmation" data-placement="left"><i class="fa fa-trash btn-trash"></i></a>&nbsp;
+										<a href="index.php?page=reports/class_summary&cId=<?php echo $rows["id"] ?>" target="_self"><i class="fa fa-line-chart btn-view"></i></a>
 									</td>
 								</tr>
 							<?php } ?>

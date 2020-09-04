@@ -300,6 +300,18 @@
                                     </div>
                                     <p>Attendance Report</p>
                                 </div>
+                                <a href="index.php?page=reports/class_summary"><div class="inner-box">
+                                    <div class="img">
+                                        <img src="images/admin.png" alt="icon">
+                                    </div>
+                                    <p>Class Sumamry Report</p>
+                                </div></a>
+                                <a href="index.php?page=reports/income_report"><div class="inner-box">
+                                    <div class="img">
+                                        <img src="images/admin.png" alt="icon">
+                                    </div>
+                                    <p>Income Report</p>
+                                </div></a>
                             </div>
                         </div>
                     </div>

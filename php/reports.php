@@ -60,6 +60,7 @@ class reports extends crud
         }
     }
 
+    
     function showStudentBySection($status, $class_id, $section_id)
     {
         session_start();
@@ -110,7 +111,7 @@ class reports extends crud
                     $totalPaidFees += $row["paid_amount"];
                 }
             }
-            $totalDueFees = (($totalMontlhyFees+$other_fee) - $totalPaidFees);
+            $totalDueFees = (($totalMontlhyFees + $other_fee) - $totalPaidFees);
 
             $data = [$totalMontlhyFees, $totalPaidFees, $totalDueFees, $other_fee];
             return $data;
@@ -311,11 +312,14 @@ class reports extends crud
         $where = "student_id = '$student_id' AND session_id = '$session_id' AND month = '$month' AND deleted_at IS NULL";
         $order = "id desc";
         $result = $this->select($table, $where, null, $order, null, null);
+        $amount = 0;
         if (mysqli_num_rows($result) > 0) {
-            $row = mysqli_fetch_array($result);
-            return $row["paid_amount"];
+            foreach ($result as $data) {
+                $amount += $data["paid_amount"];
+            }
+            return $amount;
         } else {
-            return 00;
+            return $amount;
         }
     }
 
@@ -337,21 +341,21 @@ class reports extends crud
         $results = $this->fetchAllRecord("fee_category");
         $other_fee = 0;
         if (mysqli_num_rows($results) > 0) {
-            
+
             foreach ($results as $data) {
                 $table = "payment";
                 $category_id = $data["id"];
                 $where = " class_id = '$class_id' AND category_id = $category_id AND month = '$month' AND deleted_at IS NULL";
                 $result = $this->select($table, $where, null, null, null, null);
                 if (mysqli_num_rows($result) > 0) {
-                    foreach($result as $data) {
+                    foreach ($result as $data) {
                         $other_fee += $data["total_amount"];
                     }
                 } else {
                     return $other_fee;
                 }
             }
-        }else {
+        } else {
             return $other_fee;
         }
         return $other_fee;
@@ -362,21 +366,21 @@ class reports extends crud
         $results = $this->fetchAllRecord("fee_category");
         $other_fee = 0;
         if (mysqli_num_rows($results) > 0) {
-            
+
             foreach ($results as $data) {
                 $table = "payment";
                 $category_id = $data["id"];
                 $where = " student_id = '$student_id' AND category_id = $category_id AND session_id = $session_id AND month = '$month' AND deleted_at IS NULL";
                 $result = $this->select($table, $where, null, null, null, null);
                 if (mysqli_num_rows($result) > 0) {
-                    foreach($result as $data) {
+                    foreach ($result as $data) {
                         $other_fee += $data["total_amount"];
                     }
                 } else {
                     return $other_fee;
                 }
             }
-        }else {
+        } else {
             return $other_fee;
         }
         return $other_fee;

@@ -16,15 +16,11 @@ $students = $report_obj->showStudentBySection("active", $_REQUEST["cId"], $_REQU
         <div class="col-md-4 well">
             <p><span style="font-size:20px;font-family:tahoma;color:black;">Summary Report For Class <?php echo $report_obj->getColName("class", "name", $_REQUEST["cId"]); ?></span></p>
             <p><span style="font-size:20px;font-family:tahoma;color:black;"> Report For Session: <?php echo $report_obj->getColName("session", "session_start", $_SESSION["session_id"]) . " - " . $report_obj->getColName("session", "session_end", $_SESSION["session_id"]); ?></span></p>
-            <p style="font-family:tahoma;color:black;text-transform:capitalize"> <b> Section: </b>&nbsp;&nbsp;<?php echo $report_obj->getColName("section", "name", $_REQUEST["sId"]) . " - " . $report_obj->getColName("section", "nick_name", $_REQUEST["sId"]); ?></p>
             <p style="font-family:tahoma;color:black;text-transform:capitalize"> <b> Monthly Fees: </b>&nbsp;&nbsp;<?php echo $monthly_fees = $report_obj->monthlyFees($_REQUEST["cId"]); ?></p>
             <p style="font-family:tahoma;color:black;text-transform:capitalize"> <b> Total Fees: </b>&nbsp;&nbsp;<?php echo ($monthly_fees * 12) . " Per Student" ?></p>
         </div>
     </div>
 </div>
-
-
-
 
 <div class="table-responsive thumbnail" style="margin-top:30px;padding:20px;">
     <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -33,6 +29,7 @@ $students = $report_obj->showStudentBySection("active", $_REQUEST["cId"], $_REQU
                 <th>#</th>
                 <th>Students</th>
                 <th>Parents</th>
+                <th>Section</th>
                 <?php for ($i = 1; $i <= 12; $i++) {
                     $monthNum  = $i;
                     $dateObj   = DateTime::createFromFormat('!m', $monthNum);
@@ -55,11 +52,11 @@ $students = $report_obj->showStudentBySection("active", $_REQUEST["cId"], $_REQU
                     <td><?php echo $count++; ?></td>
                     <td><?php echo $data["name"] ?></td>
                     <td><?php echo $data["father_name"] ?></td>
+                    <td><?php $sec_record = $report_obj->getRecordById("section", $data["section_id"]); echo $sec_record["name"] ?></td>
                     <?php
                     $total_fees = 0;
                     $other_fee = 0;
                     for ($i = 1; $i <= 12; $i++) {
-
                         $monthNum  = str_pad($i, 2, "0", STR_PAD_LEFT);
                         $dateObj   = DateTime::createFromFormat('!m', $monthNum);
                         $monthName = $dateObj->format('F');
@@ -75,7 +72,7 @@ $students = $report_obj->showStudentBySection("active", $_REQUEST["cId"], $_REQU
                     <td><?php echo $other_fee ?></td>
                     <td><?php echo (($monthly_fees * 12)+$other_fee) - $total_fees ?></td>
                     <td>
-                        <a href="index.php?page=reports/student_summary&sId=<?php echo $row["student_id"] ?>&cId=<?php echo $row["class_id"] ?>"><i class="fa fa-eye btn-view"></i></a> &nbsp;
+                        <a href="index.php?page=reports/student_summary&sId=<?php echo $data["id"] ?>"><i class="fa fa-eye btn-view"></i></a> &nbsp;
                     </td>
                 </tr>
             <?php
